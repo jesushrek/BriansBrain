@@ -1,9 +1,11 @@
 #include <raylib.h>
 #include <algorithm>
 
-constexpr int g_Height { 100 };
-constexpr int g_Width { 100 };
-constexpr int g_Size { 8 };
+//#define WRAP_AROUND
+
+constexpr int g_Height { 200 };
+constexpr int g_Width { 200 };
+constexpr int g_Size { 4 };
 
 enum State{ 
     Dead,
@@ -41,11 +43,18 @@ int countNeighbor(int y, int x, int* grid)
         { 
             if(j == 0 && i == 0) continue;
 
+#ifndef WRAP_AROUND
+            int dy { (y + i) };
+            int dx { (x + j) };
+#endif
+
+#ifdef WRAP_AROUND
+
             int dy { (y + i + g_Height) % g_Height };
             int dx { (x + j + g_Width) % g_Width };
-
-//            if(dx >= g_Width || dy >= g_Height || dy < 0 || dx < 0)
- //               continue;
+            if(dx >= g_Width || dy >= g_Height || dy < 0 || dx < 0)
+               continue;
+#endif
 
             int index { dy * g_Width + dx };
             if(grid[index] == Alive)
